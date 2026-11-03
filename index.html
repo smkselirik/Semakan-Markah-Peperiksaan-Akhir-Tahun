@@ -1,418 +1,194 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAPS PAT - Semakan Keputusan</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <style>
-        :root {
-            --light-blue: #e0f7fa;
-            --header-blue: #0277bd;
-            --text-dark: #333;
-        }
-        
-        body {
-            background-color: var(--light-blue);
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            color: var(--text-dark);
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        /* Halaman Carian */
-        #search-section {
-            text-align: center;
-            padding: 50px 20px;
-        }
-        
-        .header-title {
-            color: var(--header-blue);
-            font-size: 24px;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        input[type="text"] {
-            padding: 12px;
-            font-size: 16px;
-            width: 80%;
-            max-width: 300px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        button {
-            padding: 12px 24px;
-            font-size: 16px;
-            background-color: var(--header-blue);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background-color: #01579b;
-        }
-
-        .btn-keluar {
-            background-color: #d32f2f;
-        }
-        .btn-keluar:hover {
-            background-color: #b71c1c;
-        }
-
-        #loading {
-            display: none;
-            margin-top: 15px;
-            color: var(--header-blue);
-            font-weight: bold;
-        }
-
-        /* Halaman Slip Keputusan */
-        #result-section {
-            display: none;
-        }
-
-        .info-table, .marks-table, .analysis-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        .info-table td {
-            padding: 5px 0;
-            font-size: 16px;
-        }
-        
-        .info-table td:first-child {
-            width: 150px;
-            font-weight: bold;
-        }
-
-        .marks-table th, .marks-table td, .analysis-table th, .analysis-table td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: left;
-        }
-
-        .marks-table th {
-            background-color: var(--light-blue);
-            text-align: center;
-        }
-        
-        .marks-table td.center {
-            text-align: center;
-        }
-
-        .signatures {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 60px;
-        }
-
-        .sig-block {
-            text-align: center;
-            width: 40%;
-        }
-
-        .sig-line {
-            border-top: 1px solid #000;
-            margin-bottom: 5px;
-        }
-
-        .footer-note {
-            text-align: center;
-            font-size: 12px;
-            font-style: italic;
-            margin-top: 30px;
-        }
-
-        .action-buttons {
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        /* Format Cetakan */
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            .container {
-                box-shadow: none;
-                margin: 0;
-                padding: 0;
-                width: 100%;
-            }
-            .action-buttons, #search-section {
-                display: none !important;
-            }
-        }
-    </style>
+  <base target="_top">
+  <style>
+    body {
+      background-color: #add8e6; /* Biru muda */
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px; margin: auto;
+      background-color: white;
+      padding: 30px; border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .header-img {
+      width: 100%; border-radius: 8px; margin-bottom: 20px;
+    }
+    h2 { text-align: center; color: #333; }
+    .search-box {
+      text-align: center; margin-bottom: 20px;
+    }
+    .search-box input {
+      padding: 10px; width: 60%; font-size: 16px;
+    }
+    .search-box button {
+      padding: 10px 20px; font-size: 16px; cursor: pointer;
+      background-color: #0056b3; color: white; border: none;
+    }
+    #slip { display: none; }
+    table {
+      width: 100%; border-collapse: collapse; margin-top: 20px; margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd; padding: 8px; text-align: left;
+    }
+    th { background-color: #f2f2f2; }
+    .summary-section p, .student-info p { margin: 5px 0; }
+    .footer {
+      margin-top: 40px; display: flex; justify-content: space-between;
+    }
+    .footer-note {
+      text-align: center; font-size: 12px; margin-top: 30px; font-style: italic;
+    }
+    .action-buttons {
+      text-align: center; margin-top: 30px;
+    }
+    .action-buttons button {
+      padding: 10px 20px; margin: 0 10px; font-size: 14px; cursor: pointer;
+    }
+    .btn-cetak { background-color: #28a745; color: white; border: none; }
+    .btn-keluar { background-color: #dc3545; color: white; border: none; }
+    
+    @media print {
+      body { background-color: white; }
+      .search-box, .action-buttons { display: none; }
+      .container { box-shadow: none; padding: 0; }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Bahagian Carian -->
-    <div id="search-section" class="container">
-        <div class="header-title">SEMAKAN KEPUTUSAN PEPERIKSAAN AKHIR TAHUN 2026</div>
-        <p>Sila masukkan No. Kad Pengenalan pelajar untuk menyemak keputusan.</p>
-        <input type="text" id="ic-input" placeholder="Cth: 100101135011" required>
+<div class="container">
+  <!-- Sila pastikan fail gambar dihoskan (diletakkan link url) jika diletak secara online -->
+  <img src="header SLIP KEPUTUSAN PEPERIKSAAN-2.png" alt="Header Slip Keputusan" class="header-img">
+  
+  <h2>SEMAKAN KEPUTUSAN PEPERIKSAAN AKHIR TAHUN 2026</h2>
+
+  <div class="search-box" id="searchSection">
+    <input type="text" id="icInput" placeholder="Masukkan No Kad Pengenalan (Contoh: 010203135566)">
+    <button onclick="semakKeputusan()">Semak</button>
+  </div>
+
+  <div id="slip">
+    <div class="student-info">
+      <p><strong>Nama:</strong> <span id="outNama"></span></p>
+      <p><strong>No Kad Pengenalan:</strong> <span id="outIC"></span></p>
+      <p><strong>Kelas:</strong> <span id="outKelas"></span></p>
+    </div>
+
+    <table id="tableMarkah">
+      <thead>
+        <tr>
+          <th>Mata Pelajaran</th>
+          <th>Markah</th>
+          <th>Gred</th>
+        </tr>
+      </thead>
+      <tbody id="bodyMarkah">
+        <!-- Akan diisi secara dinamik -->
+      </tbody>
+    </table>
+
+    <div class="summary-section">
+      <p><strong>Jumlah Markah:</strong> <span id="outJumlah"></span></p>
+      <p><strong>Purata Markah:</strong> <span id="outPurata"></span></p>
+      <p><strong>Gred Purata (GP):</strong> <span id="outGP"></span></p>
+      <p><strong>Keputusan:</strong> <span id="outKeputusan"></span></p>
+      <p><strong>Analisis Pencapaian:</strong> <span id="outAnalisis"></span></p>
+      <p><strong>Kedudukan Dalam Kelas:</strong> <span id="outKedudukanKelas"></span></p>
+      <p><strong>Kedudukan Dalam Tingkatan:</strong> <span id="outKedudukanTingkatan"></span></p>
+    </div>
+
+    <div class="footer">
+      <div>
+        <p>Tandatangan Guru Tingkatan</p>
         <br><br>
-        <button onclick="semakKeputusan()">SEMAK KEPUTUSAN</button>
-        <div id="loading">Sistem sedang menyemak pangkalan data... Sila tunggu.</div>
+        <p>................................................</p>
+        <p><strong id="outGuru"></strong></p>
+      </div>
+      <div>
+        <p>Tandatangan Pengetua</p>
+        <br><br>
+        <p>................................................</p>
+        <p><strong>ANDREW ANAK ATAN</strong></p>
+      </div>
     </div>
 
-    <!-- Bahagian Dashboard Keputusan -->
-    <div id="result-section" class="container">
-        <div class="header-title">SEMAKAN KEPUTUSAN PEPERIKSAAN AKHIR TAHUN 2026</div>
-        
-        <table class="info-table">
-            <tr>
-                <td>NAMA</td>
-                <td>: <span id="res-nama"></span></td>
-            </tr>
-            <tr>
-                <td>NO. KAD PENGENALAN</td>
-                <td>: <span id="res-kp"></span></td>
-            </tr>
-            <tr>
-                <td>KELAS</td>
-                <td>: <span id="res-kelas"></span></td>
-            </tr>
-        </table>
-
-        <table class="marks-table" id="marks-table">
-            <thead>
-                <tr>
-                    <th>MATA PELAJARAN</th>
-                    <th style="width: 15%">MARKAH</th>
-                    <th style="width: 15%">GRED</th>
-                </tr>
-            </thead>
-            <tbody id="marks-body">
-                <!-- Data akan dimasukkan oleh JavaScript -->
-            </tbody>
-        </table>
-
-        <table class="analysis-table">
-            <tr>
-                <th style="width: 40%;">JUMLAH MARKAH</th>
-                <td id="res-jumlah"></td>
-            </tr>
-            <tr>
-                <th>PURATA MARKAH</th>
-                <td id="res-purata"></td>
-            </tr>
-            <tr>
-                <th>GRED PURATA</th>
-                <td id="res-gred-purata"></td>
-            </tr>
-            <tr>
-                <th>KEPUTUSAN</th>
-                <td id="res-keputusan"></td>
-            </tr>
-            <tr>
-                <th>ANALISIS PENCAPAIAN</th>
-                <td id="res-analisis"></td>
-            </tr>
-            <tr>
-                <th>KEDUDUKAN DALAM KELAS</th>
-                <td id="res-kdk"></td>
-            </tr>
-            <tr>
-                <th>KEDUDUKAN DALAM TINGKATAN</th>
-                <td id="res-kdt"></td>
-            </tr>
-        </table>
-
-        <div class="signatures">
-            <div class="sig-block">
-                <br><br><br>
-                <div class="sig-line"></div>
-                <div id="res-guru" style="font-weight: bold; text-transform: uppercase;"></div>
-                <div>Guru Tingkatan</div>
-            </div>
-            <div class="sig-block">
-                <br><br><br>
-                <div class="sig-line"></div>
-                <div style="font-weight: bold;">ANDREW ANAK ATAN</div>
-                <div>Pengetua</div>
-            </div>
-        </div>
-
-        <div class="footer-note">
-            Nota: Slip ini adalah cetakan komputer. Tandatangan tidak diperlukan.
-        </div>
-
-        <div class="action-buttons">
-            <button onclick="window.print()">CETAK SLIP</button>
-            <button class="btn-keluar" onclick="location.reload()">KELUAR</button>
-        </div>
+    <div class="footer-note">
+      Nota: Slip ini adalah cetakan komputer. Tandatangan tidak diperlukan.
     </div>
+
+    <div class="action-buttons">
+      <button class="btn-cetak" onclick="window.print()">CETAK SLIP</button>
+      <button class="btn-keluar" onclick="keluarSistem()">KELUAR</button>
+    </div>
+  </div>
+</div>
 
 <script>
-    // Pautan Google Sheets yang diekstrak sebagai CSV
-    const dataSources = [
-        { level: 4, url: 'https://docs.google.com/spreadsheets/d/11jys_DANNTmvnCtmT2wjre3k1_eswq6DIqYNMzzP9Bo/gviz/tq?tqx=out:csv&sheet=GABUNG%20TINGKATAN', teacherCol: 101 }, // Col CX = index 101
-        { level: 3, url: 'https://docs.google.com/spreadsheets/d/1LKR3pXBxyIbb9nHo8jnTUmL1wBSbQN2Bpcgvx7bxAuU/gviz/tq?tqx=out:csv&sheet=TEMP', teacherCol: 70 }, // Col BS = index 70
-        { level: 2, url: 'https://docs.google.com/spreadsheets/d/1UVCMaIqjNJ5B96z6Cvrpx35AtbNa7BXsW0TYEg7eo04/gviz/tq?tqx=out:csv&sheet=TEMP', teacherCol: 70 },
-        { level: 1, url: 'https://docs.google.com/spreadsheets/d/1unaLY4EiU0o6PBwku9YI7IWb_4ZnuRtOu45dR2WOLbE/gviz/tq?tqx=out:csv&sheet=TEMP', teacherCol: 70 }
-    ];
+  const senaraiSubjek = {
+    'BM': 'Bahasa Melayu', 'BI': 'English Language', 'Sej': 'Sejarah',
+    'Mate': 'Matematik / Mathematics', 'SN': 'Sains', 'PM': 'Pendidikan Moral',
+    'PI': 'Pendidikan Islam', 'BIB': 'Bahasa Iban', 'SK': 'Sains Komputer',
+    'ASK': 'Asas Sains Computer', 'RC': 'Reka Cipta', 'RBT': 'Reka Bentuk & Teknologi',
+    'KAG': 'Kimpalan Arka & Gas', 'Bio': 'Biology', 'Fiz': 'Physics',
+    'Kim': 'Chemistry', 'MT': 'Additional Mathematics', 'PP': 'Perniagaan',
+    'PSV': 'Pendidikan Seni Visual', 'Geo': 'Geografi', 'PJPK': 'Pendidikan Jasmani dan Pendidikan Kesihatan'
+  };
 
-    const subjectsMap = {
-        'BM': 'Bahasa Melayu',
-        'BI': 'English Language',
-        'SEJ': 'Sejarah',
-        'MATE': 'Matematik / Mathematics',
-        'SN': 'Sains',
-        'PM': 'Pendidikan Moral',
-        'PI': 'Pendidikan Islam',
-        'BIB': 'Bahasa Iban',
-        'SK': 'Sains Komputer',
-        'ASK': 'Asas Sains Computer',
-        'RC': 'Reka Cipta',
-        'RBT': 'Reka Bentuk & Teknologi',
-        'KAG': 'Kimpalan Arka & Gas',
-        'BIO': 'Biology',
-        'FIZ': 'Physics',
-        'KIM': 'Chemistry',
-        'MT': 'Additional Mathematics',
-        'PP': 'Perniagaan',
-        'PSV': 'Pendidikan Seni Visual',
-        'GEO': 'Geografi',
-        'PJPK': 'Pendidikan Jasmani dan Pendidikan Kesihatan'
-    };
+  function semakKeputusan() {
+    const ic = document.getElementById('icInput').value;
+    if(!ic) { alert('Sila masukkan No Kad Pengenalan'); return; }
+    
+    // Panggil fungsi Google Apps Script di backend
+    google.script.run.withSuccessHandler(paparKeputusan).cariPelajar(ic);
+  }
 
-    async function semakKeputusan() {
-        const icInput = document.getElementById('ic-input').value.trim();
-        if (!icInput) {
-            alert('Sila masukkan No. Kad Pengenalan.');
-            return;
-        }
-
-        document.getElementById('loading').style.display = 'block';
-        let found = false;
-
-        try {
-            // Carian berjalan secara selari (parallel) merentasi ke-4 tingkatan
-            const fetches = dataSources.map(src => fetch(src.url).then(res => res.text()).then(csv => ({src, csv})));
-            const results = await Promise.all(fetches);
-
-            for (let dataObj of results) {
-                const parsed = Papa.parse(dataObj.csv, { skipEmptyLines: true });
-                const rows = parsed.data;
-                if (rows.length < 2) continue;
-
-                const headers = rows[0].map(h => (h || '').toString().trim().toUpperCase());
-                
-                // Cari Index Lajur Asas
-                const icCol = headers.findIndex(h => h.includes('KP') || h.includes('KAD PENGENALAN') || h.includes('IC'));
-                const namaCol = headers.findIndex(h => h.includes('NAMA'));
-                const kelasCol = headers.findIndex(h => h.includes('KELAS') || h.includes('TINGKATAN'));
-
-                // Cari Pelajar
-                for (let i = 1; i < rows.length; i++) {
-                    const cellIC = (rows[i][icCol] || '').toString().replace(/[^0-9]/g, ''); // Buang dash jika ada
-                    const searchIC = icInput.replace(/[^0-9]/g, '');
-                    
-                    if (cellIC === searchIC) {
-                        found = true;
-                        paparKeputusan(rows[i], headers, dataObj.src, (rows.length - 1)); 
-                        break;
-                    }
-                }
-                if (found) break;
-            }
-
-            if (!found) {
-                alert('Rekod tidak dijumpai. Sila pastikan No. Kad Pengenalan adalah tepat.');
-            }
-
-        } catch (error) {
-            console.error('Ralat fetching data:', error);
-            alert('Ralat sistem ketika membaca pangkalan data. Sila pastikan sheet Google ditetapkan kepada "Anyone with the link can view".');
-        }
-
-        document.getElementById('loading').style.display = 'none';
+  function paparKeputusan(data) {
+    if(!data) {
+      alert("Rekod tidak dijumpai. Sila pastikan No Kad Pengenalan adalah tepat.");
+      return;
     }
 
-    function paparKeputusan(studentData, headers, sourceInfo, jumlahPelajarTingkatan) {
-        document.getElementById('search-section').style.display = 'none';
-        document.getElementById('result-section').style.display = 'block';
+    document.getElementById('searchSection').style.display = 'none';
+    document.getElementById('slip').style.display = 'block';
 
-        // Helper func untuk cari nilai
-        const getVal = (keywords) => {
-            const idx = headers.findIndex(h => keywords.some(k => h.includes(k)));
-            return idx !== -1 ? studentData[idx] : '';
-        };
+    document.getElementById('outNama').innerText = data.nama;
+    document.getElementById('outIC').innerText = data.ic;
+    document.getElementById('outKelas').innerText = data.kelas;
 
-        // Info Asas
-        document.getElementById('res-nama').innerText = getVal(['NAMA']);
-        document.getElementById('res-kp').innerText = getVal(['KP', 'KAD PENGENALAN']);
-        document.getElementById('res-kelas').innerText = getVal(['KELAS']);
-
-        // Clear table markah
-        const tbody = document.getElementById('marks-body');
-        tbody.innerHTML = '';
-
-        // Papar subjek, markah & gred
-        for (const [code, fullName] of Object.entries(subjectsMap)) {
-            // Cari index subjek yang tepat
-            const markIdx = headers.findIndex(h => h === code);
-            if (markIdx !== -1) {
-                const mark = studentData[markIdx];
-                // Syarat: Jangan paparkan subjek yang tiada markah
-                if (mark && mark.trim() !== '') {
-                    // Cari column Gred: cuba cari header 'GRED X', jika tiada, ambil lajur di sebelah markah (standard format)
-                    let gradeIdx = headers.findIndex(h => h === `GRED ${code}` || h === `G ${code}`);
-                    if (gradeIdx === -1) gradeIdx = markIdx + 1; 
-
-                    let grade = studentData[gradeIdx] || '';
-
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${fullName} (${code})</td>
-                        <td class="center">${mark}</td>
-                        <td class="center">${grade}</td>
-                    `;
-                    tbody.appendChild(tr);
-                }
-            }
-        }
-
-        // Analisis Data
-        document.getElementById('res-jumlah').innerText = getVal(['JUMLAH']);
-        document.getElementById('res-purata').innerText = getVal(['PURATA']);
-        document.getElementById('res-gred-purata').innerText = getVal(['GPS', 'GRED PURATA']);
-        document.getElementById('res-keputusan').innerText = getVal(['KEPUTUSAN', 'LULUS', 'GAGAL']);
-        document.getElementById('res-analisis').innerText = getVal(['PENCAPAIAN', 'ANALISIS']);
-        
-        let kdk = getVal(['KDK', 'DALAM KELAS']);
-        document.getElementById('res-kdk').innerText = kdk ? kdk : '-';
-        
-        let kdtVal = getVal(['KDT', 'DALAM TINGKATAN']);
-        // Format "Kedudukan / Jumlah Sebenar Pelajar"
-        document.getElementById('res-kdt').innerText = kdtVal ? `${kdtVal} / ${jumlahPelajarTingkatan}` : `- / ${jumlahPelajarTingkatan}`;
-
-        // Nama Guru Tingkatan mengikut parameter arahan column (101 untuk T4, 70 untuk T1-3)
-        const namaGuru = studentData[sourceInfo.teacherCol] || '';
-        document.getElementById('res-guru').innerText = namaGuru;
+    let tbody = document.getElementById('bodyMarkah');
+    tbody.innerHTML = '';
+    
+    // Papar hanya subjek yang mempunyai markah
+    for (let kod in senaraiSubjek) {
+      if (data.markah[kod] && data.markah[kod].markah !== "") {
+        let tr = document.createElement('tr');
+        tr.innerHTML = `<td>${senaraiSubjek[kod]}</td>
+                        <td>${data.markah[kod].markah}</td>
+                        <td>${data.markah[kod].gred}</td>`;
+        tbody.appendChild(tr);
+      }
     }
+
+    document.getElementById('outJumlah').innerText = data.jumlahMarkah;
+    document.getElementById('outPurata').innerText = data.purataMarkah;
+    document.getElementById('outGP').innerText = data.gredPurata;
+    document.getElementById('outKeputusan').innerText = data.keputusan;
+    document.getElementById('outAnalisis').innerText = data.analisis;
+    document.getElementById('outKedudukanKelas').innerText = data.kedudukanKelas;
+    document.getElementById('outKedudukanTingkatan').innerText = data.kedudukanTingkatan;
+    document.getElementById('outGuru').innerText = data.guruTingkatan;
+  }
+
+  function keluarSistem() {
+    document.getElementById('icInput').value = '';
+    document.getElementById('slip').style.display = 'none';
+    document.getElementById('searchSection').style.display = 'block';
+  }
 </script>
-
 </body>
 </html>
